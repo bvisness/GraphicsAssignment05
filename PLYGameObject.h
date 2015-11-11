@@ -17,11 +17,13 @@ private:
     int numberOfVertices = 0;
     Vector4* vertices;
     Vector3* vertexNormals;
+	Vector2* vertexUVs;
     Vector4* vertexColors;
 protected:
     int getNumberOfVertices();
     Vector4* getVertices();
     Vector3* getVertexNormals();
+	Vector2* getVertexUVs();
     Vector4* getVertexColors();
 public:
     int loadPLY(const char* filename);

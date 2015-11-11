@@ -193,6 +193,10 @@ Vector3* PLYGameObject::getVertexNormals() {
     return vertexNormals;
 }
 
+Vector2* PLYGameObject::getVertexUVs() {
+	return vertexUVs;
+}
+
 Vector4* PLYGameObject::getVertexColors() {
     return vertexColors;
 }
