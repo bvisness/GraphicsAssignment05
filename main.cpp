@@ -25,6 +25,8 @@ mat4 mv, p;
 
 Scene* scene;
 
+Sphere* test;
+
 Camera* mainCam;
 
 void display(void)
@@ -68,8 +70,20 @@ void specialUp(int key, int x, int y) {
 void createObjects() {
     scene = new Scene();
 
+	test = new Sphere(2, 8, Vector4(1, 1, 1, 1));
+	scene->addGameObject(test);
+
 	mainCam = new Camera();
+	mainCam->position.z = 10;
+	mainCam->setTarget(test);
 	scene->addGameObject(mainCam);
+
+	Light* light = new Light();
+	light->type = LIGHT_POINT;
+	light->position = Vector3(2, 2, 5);
+	light->color = Vector4(1, 1, 1, 1);
+	scene->addLight(light);
+	scene->addGameObject(light);
     
     scene->setActiveCamera(mainCam);
 }
@@ -99,6 +113,8 @@ void reshape(int width, int height){
 }
 
 void timer(GLint v) {
+	test->rotation.x += 1;
+
     glutPostRedisplay();
 	glutTimerFunc(1000 / v, timer, v);
 }
