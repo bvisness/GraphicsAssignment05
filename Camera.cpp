@@ -51,6 +51,10 @@ Matrix4 Camera::getModelViewMatrix() {
 }
 
 Matrix4 Camera::getProjectionMatrix() {
+	if (scene == nullptr) {
+		abortWithMessage("In Camera::getProjectionMatrix(): Scene for camera not set.");
+	}
+
     return Perspective(fov, scene->aspect, nearDistance, farDistance);
 }
 
