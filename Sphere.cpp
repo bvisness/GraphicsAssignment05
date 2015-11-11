@@ -67,6 +67,10 @@ Vector3* Sphere::getVertexNormals() {
     return sphereNormals;
 }
 
+Vector2* Sphere::getVertexUVs() {
+	return sphereUVs;
+}
+
 Vector4* Sphere::getVertexColors() {
     return sphereColors;
 }

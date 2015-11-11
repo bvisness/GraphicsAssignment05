@@ -19,11 +19,13 @@ private:
     int numVertsSphere;
     Vector4* sphereVerts = nullptr;
     Vector3* sphereNormals = nullptr;
+	Vector2* sphereUVs = nullptr;
     Vector4* sphereColors = nullptr;
 protected:
     int getNumberOfVertices();
     Vector4* getVertices();
     Vector3* getVertexNormals();
+	Vector2* getVertexUVs();
     Vector4* getVertexColors();
 public:
 	Sphere(float radius, int subdiv, Vector4 color) : RenderedGameObject() {
