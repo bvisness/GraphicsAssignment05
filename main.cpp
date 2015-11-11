@@ -70,7 +70,7 @@ void specialUp(int key, int x, int y) {
 void createObjects() {
     scene = new Scene();
 
-	test = new Sphere(2, 8, Vector4(1, 1, 1, 1));
+	test = new Sphere(2, 16, Vector4(1, 1, 1, 1));
 	scene->addGameObject(test);
 
 	mainCam = new Camera();
