@@ -7,13 +7,16 @@
 #define LIGHT_SPOT 2
 #define LIGHT_DIRECTIONAL 3
 
-in vec4 posEye;
-in vec3 normal;
-in vec4 ambientDiffuseColor;
-in vec4 specularColor;
-in float diffuseAmount;
-in float specularAmount;
-in float specularExponent;
+in vec4 fPosEye;
+in vec3 fNormal;
+in vec2 fTexCoord;
+in vec4 fAmbientDiffuseColor;
+in vec4 fSpecularColor;
+in float fDiffuseAmount;
+in float fSpecularAmount;
+in float fSpecularExponent;
+
+out vec4 fColor;
 
 uniform int uLightType[MAX_LIGHTS];
 uniform vec4 uLightPosition[MAX_LIGHTS];
@@ -22,11 +25,9 @@ uniform float uLightSpotAngleCos[MAX_LIGHTS];
 uniform vec4 uLightColor[MAX_LIGHTS];
 uniform vec4 uAmbientLight;
 
-out vec4 fColor;
-
 void main()
 {
-    vec4 amb = ambientDiffuseColor * uAmbientLight;
+    vec4 amb = fAmbientDiffuseColor * uAmbientLight;
     vec4 diff = vec4(0, 0, 0, 0);
     vec4 spec = vec4(0, 0, 0, 0);
     
@@ -35,14 +36,14 @@ void main()
             continue;
         }
         
-        vec3 fN = normalize(normal);
+        vec3 fN = normalize(fNormal);
 		vec3 fL;
 		if (uLightType[i] == LIGHT_DIRECTIONAL) {
 			fL = -normalize(uLightDirection[i].xyz);
 		} else {
-			fL = normalize(uLightPosition[i].xyz - posEye.xyz);
+			fL = normalize(uLightPosition[i].xyz - fPosEye.xyz);
 		}
-        vec3 fH = normalize(fL + normalize(-posEye.xyz));
+        vec3 fH = normalize(fL + normalize(-fPosEye.xyz));
 
 		bool isLit = true;
 		if (uLightType[i] == LIGHT_SPOT) {
@@ -50,8 +51,8 @@ void main()
 		}
 
 		if (isLit) {
-			diff += max(0, dot(fN, fL)) * diffuseAmount * ambientDiffuseColor * uLightColor[i];
-			spec += pow(max(0, dot(fN, fH)), specularExponent) * specularAmount * specularColor * uLightColor[i];
+			diff += max(0, dot(fN, fL)) * fDiffuseAmount * fAmbientDiffuseColor * uLightColor[i];
+			spec += pow(max(0, dot(fN, fH)), fSpecularExponent) * fSpecularAmount * fSpecularColor * uLightColor[i];
 		}
 	}
     

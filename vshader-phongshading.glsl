@@ -3,32 +3,35 @@
 in vec4 vPosition;
 in vec4 vAmbientDiffuseColor;
 in vec3 vNormal;
+in vec2 vTexCoord;
 in float vDiffuseAmount;
 in float vSpecularAmount;
 in float vSpecularExponent;
 
 vec4 vSpecularColor = vec4(1, 1, 1, 1);
 
-out vec4 posEye;
-out vec3 normal;
-out vec4 ambientDiffuseColor;
-out vec4 specularColor;
-out float diffuseAmount;
-out float specularAmount;
-out float specularExponent;
+out vec4 fPosEye;
+out vec3 fNormal;
+out vec2 fTexCoord;
+out vec4 fAmbientDiffuseColor;
+out vec4 fSpecularColor;
+out float fDiffuseAmount;
+out float fSpecularAmount;
+out float fSpecularExponent;
 
 uniform mat4 uModelView;
 uniform mat4 uProjection;
 
 void main()
 {
-	posEye = uModelView * vPosition;
-	normal = (uModelView * vec4(vNormal, 0)).xyz;
-	ambientDiffuseColor = vAmbientDiffuseColor;
-	specularColor = vSpecularColor;
-    diffuseAmount = vDiffuseAmount;
-    specularAmount = vSpecularAmount;
-    specularExponent = vSpecularExponent;
+	fPosEye = uModelView * vPosition;
+	fNormal = (uModelView * vec4(vNormal, 0)).xyz;
+	fTexCoord = vTexCoord;
+	fAmbientDiffuseColor = vAmbientDiffuseColor;
+	fSpecularColor = vSpecularColor;
+    fDiffuseAmount = vDiffuseAmount;
+    fSpecularAmount = vSpecularAmount;
+    fSpecularExponent = vSpecularExponent;
 
-	gl_Position = uProjection * posEye;
+	gl_Position = uProjection * fPosEye;
 }
