@@ -10,6 +10,28 @@
 
 #include "GLMiddleman.h"
 
+/*	Create checkerboard texture	*/
+#define	texWidth 64
+#define	texHeight 64
+GLubyte texture[texHeight][texWidth][3];
+
+void makeCheckerTexture(void)
+{
+	int i, j, c;
+
+	for (i = 0; i < texHeight; i++) {
+		for (j = 0; j < texWidth; j++) {
+			c = (((i / 8) + (j / 8)) % 2) * 255;
+			texture[i][j][0] = (GLubyte)c;
+			texture[i][j][1] = (GLubyte)c;
+			texture[i][j][2] = (GLubyte)c;
+			//texture[i][j][0] = (GLubyte)255;
+			//texture[i][j][1] = (GLubyte)255;
+			//texture[i][j][2] = (GLubyte)255;
+		}
+	}
+}
+
 GLfloat* floatArrayWithValue(int size, GLfloat value) {
     GLfloat* result = new GLfloat[size];
     for (int i = 0; i < size; i++) {
@@ -31,6 +53,23 @@ GLMiddleman::GLMiddleman() {
     uLightPosition = glGetUniformLocation(program, "uLightPosition");
     uLightDirection = glGetUniformLocation(program, "uLightDirection");
 	uLightSpotAngleCos = glGetUniformLocation(program, "uLightSpotAngleCos");
+
+	makeCheckerTexture();
+
+	glGenTextures(1, textureNames);
+	//make sure you're bound to the correct texture object
+	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, texture);
+
+	//You'll need a uniform sampler in your fragment shader to get at the texels
+	uTexture = glGetUniformLocation(program, "uTexture");
+
+	//assign this one to texture unit 0
+	glUniform1i(uTexture, 0);
 }
 
 void GLMiddleman::updateProjectionMatrix(mat4 newMatrix) {
@@ -84,6 +123,17 @@ void GLMiddleman::bufferObject(ObjectInfo object) {
 		vNormal = glGetAttribLocation(program, "vNormal");
 		glEnableVertexAttribArray(vNormal);
 		glVertexAttribPointer(vNormal, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	k++;
+
+	{
+		// Vertex UVs
+		int dataCount = 2;
+		glBindBuffer(GL_ARRAY_BUFFER, object.vbo[k]);
+		glBufferData(GL_ARRAY_BUFFER, object.numberOfVertices * (sizeof(GLfloat)* dataCount), object.vertexUVs, GL_STATIC_DRAW);
+		vTexCoord = glGetAttribLocation(program, "vTexCoord");
+		glEnableVertexAttribArray(vTexCoord);
+		glVertexAttribPointer(vTexCoord, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
 	}
 	k++;
 

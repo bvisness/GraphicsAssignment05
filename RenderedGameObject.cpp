@@ -19,6 +19,7 @@ void RenderedGameObject::customInitGameObject() {
 	object.numberOfVertices = getNumberOfVertices();
 	object.vertices = getVertices();
 	object.vertexNormals = getVertexNormals();
+	object.vertexUVs = getVertexUVs();
 	object.vertexColors = getVertexColors();
 	object.material = material;
 
@@ -34,5 +35,6 @@ void RenderedGameObject::drawGameObject() {
 
 	scene->middleman->updateModelViewMatrix(mv);
 	glBindVertexArray(vao);
+	glBindTexture(GL_TEXTURE_2D, scene->middleman->textureNames[0]);
 	glDrawArrays(GL_TRIANGLES, 0, getNumberOfVertices());
 }

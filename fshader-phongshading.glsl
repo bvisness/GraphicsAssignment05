@@ -24,10 +24,15 @@ uniform vec4 uLightDirection[MAX_LIGHTS];
 uniform float uLightSpotAngleCos[MAX_LIGHTS];
 uniform vec4 uLightColor[MAX_LIGHTS];
 uniform vec4 uAmbientLight;
+uniform sampler2D uTexture;
+
+vec4 getFAmbientDiffuseColor() {
+	return fAmbientDiffuseColor * texture2D(uTexture, fTexCoord);
+}
 
 void main()
 {
-    vec4 amb = fAmbientDiffuseColor * uAmbientLight;
+    vec4 amb = getFAmbientDiffuseColor() * uAmbientLight;
     vec4 diff = vec4(0, 0, 0, 0);
     vec4 spec = vec4(0, 0, 0, 0);
     
@@ -51,15 +56,17 @@ void main()
 		}
 
 		if (isLit) {
-			diff += max(0, dot(fN, fL)) * fDiffuseAmount * fAmbientDiffuseColor * uLightColor[i];
+			diff += max(0, dot(fN, fL)) * fDiffuseAmount * getFAmbientDiffuseColor() * uLightColor[i];
 			spec += pow(max(0, dot(fN, fH)), fSpecularExponent) * fSpecularAmount * fSpecularColor * uLightColor[i];
 		}
 	}
     
+	
     fColor = amb + diff + spec;
     //fColor = amb;
     //fColor = diff;
     //fColor = spec;
+	//fColor = texture2D(uTexture, fTexCoord);
     //fColor = vec4(fN, 1);
     //fColor = vec4(diffuseAmount, diffuseAmount, diffuseAmount, 1);
     //fColor = vec4(specularAmount, specularAmount, specularAmount, 1);

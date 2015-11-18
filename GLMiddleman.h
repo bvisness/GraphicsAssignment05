@@ -17,6 +17,10 @@
 #define MAX_LIGHTS 10
 #endif
 
+#ifndef MAX_TEXTURES
+#define MAX_TEXTURES 10
+#endif
+
 /**
  * A class that handles shipping data over to
  * the graphics card using OpenGL methods.
@@ -31,6 +35,7 @@ public:
     GLuint projection;
     GLuint vPosition;
     GLuint vNormal;
+	GLuint vTexCoord;
     GLuint vAmbientDiffuseColor;
     GLfloat vDiffuseAmount;
     GLfloat vSpecularAmount;
@@ -41,12 +46,14 @@ public:
     GLuint uLightPosition;
     GLuint uLightDirection;
 	GLuint uLightSpotAngleCos;
+	GLuint uTexture;
 
 	Vector4 lightPositions[MAX_LIGHTS];
 	Vector4 lightDirections[MAX_LIGHTS];
 	Vector4 lightColors[MAX_LIGHTS];
 	GLint lightTypes[MAX_LIGHTS];
 	GLfloat lightSpotAngleCosines[MAX_LIGHTS];
+	GLuint textureNames[MAX_TEXTURES];
     
     void updateProjectionMatrix(mat4 newMatrix);
     void updateModelViewMatrix(mat4 newMatrix);
@@ -57,6 +64,7 @@ public:
 		int unsigned numberOfVertices = 0;
 		Vector4* vertices = nullptr;
 		Vector3* vertexNormals = nullptr;
+		Vector2* vertexUVs = nullptr;
 		Vector4* vertexColors = nullptr;
 		Material material = Material();
 	};
