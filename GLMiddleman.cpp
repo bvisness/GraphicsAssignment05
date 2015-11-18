@@ -41,50 +41,95 @@ void GLMiddleman::updateModelViewMatrix(mat4 newMatrix) {
     glUniformMatrix4fv(model_view, 1, GL_TRUE, newMatrix);
 }
 
-void GLMiddleman::bufferObject(GLuint vao, GLuint* vbo, int numberOfVertices, Vector4* vertices, Vector3* vertexNormals, Vector4* vertexColors, Material material) {
-	glBindVertexArray(vao);
+void GLMiddleman::bufferObject(ObjectInfo object) {
+	if (object.vao == UINT_MAX) {
+		warnWithMessage("In GLMiddleman::bufferObject(): VAO was not set, object not buffered.");
+		return;
+	}
+	if (object.vbo == nullptr) {
+		warnWithMessage("In GLMiddleman::bufferObject(): VBO was not set, object not buffered.");
+		return;
+	}
+	if (object.numberOfVertices > 0) {
+		if (object.vertices == nullptr) {
+			warnWithMessage("In GLMiddleman::bufferObject(): numberOfVertices was nonzero and vertices was not set, object not buffered.");
+			return;
+		}
+		if (object.vertexNormals == nullptr) {
+			warnWithMessage("In GLMiddleman::bufferObject(): numberOfVertices was nonzero and vertexNormals was not set, object not buffered.");
+			return;
+		}
+	}
 
-    // Vertex positions
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, numberOfVertices * (sizeof(GLfloat) * 4), vertices, GL_STATIC_DRAW);
-    vPosition = glGetAttribLocation(program, "vPosition");
-    glEnableVertexAttribArray(vPosition);
-    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    
-    // Vertex normal vectors
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, numberOfVertices * (sizeof(GLfloat) * 3), vertexNormals, GL_STATIC_DRAW);
-    vNormal = glGetAttribLocation(program, "vNormal");
-    glEnableVertexAttribArray(vNormal);
-    glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    
-    // Vertex ambient colors
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-    glBufferData(GL_ARRAY_BUFFER, numberOfVertices * (sizeof(GLfloat) * 4), vertexColors, GL_STATIC_DRAW);
-    vAmbientDiffuseColor = glGetAttribLocation(program, "vAmbientDiffuseColor");
-    glEnableVertexAttribArray(vAmbientDiffuseColor);
-    glVertexAttribPointer(vAmbientDiffuseColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    
-    // Vertex diffuse amount
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[3]);
-    glBufferData(GL_ARRAY_BUFFER, numberOfVertices * sizeof(GLfloat), floatArrayWithValue(numberOfVertices, material.diffuseAmount), GL_STATIC_DRAW);
-    vDiffuseAmount = glGetAttribLocation(program, "vDiffuseAmount");
-    glEnableVertexAttribArray(vDiffuseAmount);
-    glVertexAttribPointer(vDiffuseAmount, 1, GL_FLOAT, GL_FALSE, 0, 0);
-    
-    // Vertex specular amount
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[4]);
-    glBufferData(GL_ARRAY_BUFFER, numberOfVertices * sizeof(GLfloat), floatArrayWithValue(numberOfVertices, material.specularAmount), GL_STATIC_DRAW);
-    vSpecularAmount = glGetAttribLocation(program, "vSpecularAmount");
-    glEnableVertexAttribArray(vSpecularAmount);
-    glVertexAttribPointer(vSpecularAmount, 1, GL_FLOAT, GL_FALSE, 0, 0);
-    
-    // Vertex specular exponents
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[5]);
-    glBufferData(GL_ARRAY_BUFFER, numberOfVertices * sizeof(GLfloat), floatArrayWithValue(numberOfVertices, material.specularExponent), GL_STATIC_DRAW);
-    vSpecularExponent = glGetAttribLocation(program, "vSpecularExponent");
-    glEnableVertexAttribArray(vSpecularExponent);
-    glVertexAttribPointer(vSpecularExponent, 1, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindVertexArray(object.vao);
+
+	int k = 0;
+
+	{
+		// Vertex positions
+		int dataCount = 4;	
+		glBindBuffer(GL_ARRAY_BUFFER, object.vbo[k]);
+		glBufferData(GL_ARRAY_BUFFER, object.numberOfVertices * (sizeof(GLfloat)* dataCount), object.vertices, GL_STATIC_DRAW);
+		vPosition = glGetAttribLocation(program, "vPosition");
+		glEnableVertexAttribArray(vPosition);
+		glVertexAttribPointer(vPosition, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	k++;
+
+	{
+		// Vertex normal vectors
+		int dataCount = 3;
+		glBindBuffer(GL_ARRAY_BUFFER, object.vbo[k]);
+		glBufferData(GL_ARRAY_BUFFER, object.numberOfVertices * (sizeof(GLfloat)* dataCount), object.vertexNormals, GL_STATIC_DRAW);
+		vNormal = glGetAttribLocation(program, "vNormal");
+		glEnableVertexAttribArray(vNormal);
+		glVertexAttribPointer(vNormal, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	k++;
+
+	{
+		// Vertex ambient colors
+		int dataCount = 4;
+		glBindBuffer(GL_ARRAY_BUFFER, object.vbo[k]);
+		glBufferData(GL_ARRAY_BUFFER, object.numberOfVertices * (sizeof(GLfloat)* dataCount), object.vertexColors, GL_STATIC_DRAW);
+		vAmbientDiffuseColor = glGetAttribLocation(program, "vAmbientDiffuseColor");
+		glEnableVertexAttribArray(vAmbientDiffuseColor);
+		glVertexAttribPointer(vAmbientDiffuseColor, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	k++;
+
+	{
+		// Vertex diffuse amount
+		int dataCount = 1;
+		glBindBuffer(GL_ARRAY_BUFFER, object.vbo[k]);
+		glBufferData(GL_ARRAY_BUFFER, object.numberOfVertices * sizeof(GLfloat), floatArrayWithValue(object.numberOfVertices, object.material.diffuseAmount), GL_STATIC_DRAW);
+		vDiffuseAmount = glGetAttribLocation(program, "vDiffuseAmount");
+		glEnableVertexAttribArray(vDiffuseAmount);
+		glVertexAttribPointer(vDiffuseAmount, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	k++;
+
+	{
+		// Vertex specular amount
+		int dataCount = 1;
+		glBindBuffer(GL_ARRAY_BUFFER, object.vbo[k]);
+		glBufferData(GL_ARRAY_BUFFER, object.numberOfVertices * sizeof(GLfloat), floatArrayWithValue(object.numberOfVertices, object.material.specularAmount), GL_STATIC_DRAW);
+		vSpecularAmount = glGetAttribLocation(program, "vSpecularAmount");
+		glEnableVertexAttribArray(vSpecularAmount);
+		glVertexAttribPointer(vSpecularAmount, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	k++;
+
+	{
+		// Vertex specular exponents
+		int dataCount = 1;
+		glBindBuffer(GL_ARRAY_BUFFER, object.vbo[k]);
+		glBufferData(GL_ARRAY_BUFFER, object.numberOfVertices * sizeof(GLfloat), floatArrayWithValue(object.numberOfVertices, object.material.specularExponent), GL_STATIC_DRAW);
+		vSpecularExponent = glGetAttribLocation(program, "vSpecularExponent");
+		glEnableVertexAttribArray(vSpecularExponent);
+		glVertexAttribPointer(vSpecularExponent, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	k++;
 }
 
 int GLMiddleman::getLightId() {

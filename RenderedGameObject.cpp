@@ -13,7 +13,16 @@ void RenderedGameObject::customInitGameObject() {
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(VBO_COUNT, vbo);
 
-	scene->middleman->bufferObject(vao, vbo, getNumberOfVertices(), getVertices(), getVertexNormals(), getVertexColors(), material);
+	GLMiddleman::ObjectInfo object = GLMiddleman::ObjectInfo();
+	object.vao = vao;
+	object.vbo = vbo;
+	object.numberOfVertices = getNumberOfVertices();
+	object.vertices = getVertices();
+	object.vertexNormals = getVertexNormals();
+	object.vertexColors = getVertexColors();
+	object.material = material;
+
+	scene->middleman->bufferObject(object);
 }
 
 GLuint RenderedGameObject::getVAO() {
