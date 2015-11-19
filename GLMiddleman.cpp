@@ -10,28 +10,6 @@
 
 #include "GLMiddleman.h"
 
-/*	Create checkerboard texture	*/
-#define	texWidth 64
-#define	texHeight 64
-GLubyte texture[texHeight][texWidth][3];
-
-void makeCheckerTexture(void)
-{
-	int i, j, c;
-
-	for (i = 0; i < texHeight; i++) {
-		for (j = 0; j < texWidth; j++) {
-			c = (((i / 8) + (j / 8)) % 2) * 255;
-			texture[i][j][0] = (GLubyte)c;
-			texture[i][j][1] = (GLubyte)c;
-			texture[i][j][2] = (GLubyte)c;
-			//texture[i][j][0] = (GLubyte)255;
-			//texture[i][j][1] = (GLubyte)255;
-			//texture[i][j][2] = (GLubyte)255;
-		}
-	}
-}
-
 GLfloat* floatArrayWithValue(int size, GLfloat value) {
     GLfloat* result = new GLfloat[size];
     for (int i = 0; i < size; i++) {
@@ -53,23 +31,14 @@ GLMiddleman::GLMiddleman() {
     uLightPosition = glGetUniformLocation(program, "uLightPosition");
     uLightDirection = glGetUniformLocation(program, "uLightDirection");
 	uLightSpotAngleCos = glGetUniformLocation(program, "uLightSpotAngleCos");
+	uTextureMode = glGetUniformLocation(program, "uTextureMode");
+	uDiffuseTexture = glGetUniformLocation(program, "uDiffuseTexture");
+	uSpecularTexture = glGetUniformLocation(program, "uSpecularTexture");
+	uNormalMap = glGetUniformLocation(program, "uNormalMap");
 
-	makeCheckerTexture();
-
-	glGenTextures(1, textureNames);
-	//make sure you're bound to the correct texture object
-	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, texture);
-
-	//You'll need a uniform sampler in your fragment shader to get at the texels
-	uTexture = glGetUniformLocation(program, "uTexture");
-
-	//assign this one to texture unit 0
-	glUniform1i(uTexture, 0);
+	glUniform1i(uDiffuseTexture, diffuseTextureUnit);
+	glUniform1i(uSpecularTexture, specTextureUnit);
+	glUniform1i(uNormalMap, normTextureUnit);
 }
 
 void GLMiddleman::updateProjectionMatrix(mat4 newMatrix) {
@@ -199,4 +168,24 @@ void GLMiddleman::bufferLights() {
 	glUniform1fv(uLightSpotAngleCos, MAX_LIGHTS, (const GLfloat*)lightSpotAngleCosines);
 	glUniform4fv(uLightColor, MAX_LIGHTS, (const GLfloat*)lightColors);
 	glUniform1iv(uLightType, MAX_LIGHTS, (const GLint*)lightTypes);
+}
+
+void GLMiddleman::updateMaterialUniforms(Material material) {
+	GLint textureMode = 0;
+	if (material.diffuseTexture != nullptr) {
+		textureMode = textureMode | HAS_TEX_DIFFUSE;
+		glActiveTexture(GL_TEXTURE0 + diffuseTextureUnit);
+		glBindTexture(GL_TEXTURE_2D, material.diffuseTexture->getId());
+	}
+	if (material.specTexture != nullptr) {
+		textureMode = textureMode | HAS_TEX_SPEC;
+		glActiveTexture(GL_TEXTURE0 + specTextureUnit);
+		glBindTexture(GL_TEXTURE_2D, material.specTexture->getId());
+	}
+	if (material.normalMap != nullptr) {
+		textureMode = textureMode | HAS_TEX_NORM;
+		glActiveTexture(GL_TEXTURE0 + normTextureUnit);
+		glBindTexture(GL_TEXTURE_2D, material.normalMap->getId());
+	}
+	glUniform1i(uTextureMode, textureMode);
 }

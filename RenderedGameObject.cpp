@@ -35,6 +35,6 @@ void RenderedGameObject::drawGameObject() {
 
 	scene->middleman->updateModelViewMatrix(mv);
 	glBindVertexArray(vao);
-	glBindTexture(GL_TEXTURE_2D, scene->middleman->textureNames[0]);
+	scene->middleman->updateMaterialUniforms(material);
 	glDrawArrays(GL_TRIANGLES, 0, getNumberOfVertices());
 }

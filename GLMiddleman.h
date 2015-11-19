@@ -13,13 +13,12 @@
 #include "VisnessUtil.h"
 #include "Material.h"
 
-#ifndef MAX_LIGHTS
 #define MAX_LIGHTS 10
-#endif
+#define MAX_TEXTURES (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
 
-#ifndef MAX_TEXTURES
-#define MAX_TEXTURES 10
-#endif
+#define HAS_TEX_DIFFUSE 1
+#define HAS_TEX_SPEC 2
+#define HAS_TEX_NORM 4
 
 /**
  * A class that handles shipping data over to
@@ -46,14 +45,21 @@ public:
     GLuint uLightPosition;
     GLuint uLightDirection;
 	GLuint uLightSpotAngleCos;
-	GLuint uTexture;
+	GLuint uTextureMode;
+	GLuint uDiffuseTexture;
+	GLuint uSpecularTexture;
+	GLuint uNormalMap;
+
+	const int diffuseTextureUnit = 0;
+	const int specTextureUnit = 1;
+	const int normTextureUnit = 2;
 
 	Vector4 lightPositions[MAX_LIGHTS];
 	Vector4 lightDirections[MAX_LIGHTS];
 	Vector4 lightColors[MAX_LIGHTS];
 	GLint lightTypes[MAX_LIGHTS];
 	GLfloat lightSpotAngleCosines[MAX_LIGHTS];
-	GLuint textureNames[MAX_TEXTURES];
+	GLuint textureIds[MAX_TEXTURES];
     
     void updateProjectionMatrix(mat4 newMatrix);
     void updateModelViewMatrix(mat4 newMatrix);
@@ -73,6 +79,9 @@ public:
 
 	int getLightId();
 	void bufferLights();
+
+	int genTextureUnit();
+	void updateMaterialUniforms(Material material);
 };
 
 #endif /* defined(__Assignment02__GLMiddleman__) */

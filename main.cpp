@@ -14,6 +14,9 @@
 #include "PLYGameObject.h"
 #include <math.h>
 #pragma comment(lib, "glew32.lib")
+#pragma comment(lib,"ILUT.lib")
+#pragma comment(lib,"DevIL.lib")
+#pragma comment(lib,"ILU.lib")
 
 #include <stdio.h>
 
@@ -70,7 +73,11 @@ void specialUp(int key, int x, int y) {
 void createObjects() {
     scene = new Scene();
 
-	test = new Sphere(2, 16, Vector4(1, 1, 1, 1));
+	Image* earthDiffuseImage = new Image("images/earth.png");
+	Texture2D* earthDiffuseTex = new Texture2D(earthDiffuseImage->getInfo());
+
+	test = new Sphere(2, 32, Vector4(1, 1, 1, 1));
+	test->material.diffuseTexture = earthDiffuseTex;
 	scene->addGameObject(test);
 
 	mainCam = new Camera();

@@ -7,6 +7,10 @@
 #define LIGHT_SPOT 2
 #define LIGHT_DIRECTIONAL 3
 
+#define HAS_TEX_DIFFUSE 1
+#define HAS_TEX_SPEC 2
+#define HAS_TEX_NORM 4
+
 in vec4 fPosEye;
 in vec3 fNormal;
 in vec2 fTexCoord;
@@ -24,15 +28,34 @@ uniform vec4 uLightDirection[MAX_LIGHTS];
 uniform float uLightSpotAngleCos[MAX_LIGHTS];
 uniform vec4 uLightColor[MAX_LIGHTS];
 uniform vec4 uAmbientLight;
-uniform sampler2D uTexture;
+uniform int uTextureMode;
+uniform sampler2D uDiffuseTexture;
+uniform sampler2D uSpecularTexture;
+uniform sampler2D uNormalMap;
 
-vec4 getFAmbientDiffuseColor() {
-	return fAmbientDiffuseColor * texture2D(uTexture, fTexCoord);
+bool hasDiffuseTexture() {
+	return (uTextureMode & HAS_TEX_DIFFUSE) != 0;
+}
+
+bool hasSpecTexture() {
+	return (uTextureMode & HAS_TEX_SPEC) != 0;
+}
+
+bool hasNormalMap() {
+	return (uTextureMode & HAS_TEX_NORM) != 0;
+}
+
+vec4 getAmbientDiffuseColor() {
+	if (hasDiffuseTexture()) {
+		return texture2D(uDiffuseTexture, fTexCoord);
+	} else {
+		return fAmbientDiffuseColor;
+	}
 }
 
 void main()
 {
-    vec4 amb = getFAmbientDiffuseColor() * uAmbientLight;
+    vec4 amb = getAmbientDiffuseColor() * uAmbientLight;
     vec4 diff = vec4(0, 0, 0, 0);
     vec4 spec = vec4(0, 0, 0, 0);
     
@@ -56,7 +79,7 @@ void main()
 		}
 
 		if (isLit) {
-			diff += max(0, dot(fN, fL)) * fDiffuseAmount * getFAmbientDiffuseColor() * uLightColor[i];
+			diff += max(0, dot(fN, fL)) * fDiffuseAmount * getAmbientDiffuseColor() * uLightColor[i];
 			spec += pow(max(0, dot(fN, fH)), fSpecularExponent) * fSpecularAmount * fSpecularColor * uLightColor[i];
 		}
 	}
