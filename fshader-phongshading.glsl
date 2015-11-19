@@ -37,7 +37,7 @@ bool hasDiffuseTexture() {
 	return (uTextureMode & HAS_TEX_DIFFUSE) != 0;
 }
 
-bool hasSpecTexture() {
+bool hasSpecularTexture() {
 	return (uTextureMode & HAS_TEX_SPEC) != 0;
 }
 
@@ -53,11 +53,29 @@ vec4 getAmbientDiffuseColor() {
 	}
 }
 
+vec4 getSpecularColor() {
+	if (hasSpecularTexture()) {
+		return vec4(texture2D(uSpecularTexture, fTexCoord).rgb, 1);
+	} else {
+		return fSpecularColor;
+	}
+}
+
+float getSpecularExponent() {
+	if (hasSpecularTexture()) {
+		return (texture2D(uSpecularTexture, fTexCoord).a * 500) + 1;
+	} else {
+		return fSpecularExponent;
+	}
+}
+
 void main()
 {
     vec4 amb = getAmbientDiffuseColor() * uAmbientLight;
     vec4 diff = vec4(0, 0, 0, 0);
     vec4 spec = vec4(0, 0, 0, 0);
+
+	vec3 fV = normalize(-fPosEye.xyz);
     
     for (int i = 0; i < MAX_LIGHTS; i++) {
         if (uLightType[i] == 0) {
@@ -80,7 +98,9 @@ void main()
 
 		if (isLit) {
 			diff += max(0, dot(fN, fL)) * fDiffuseAmount * getAmbientDiffuseColor() * uLightColor[i];
-			spec += pow(max(0, dot(fN, fH)), fSpecularExponent) * fSpecularAmount * fSpecularColor * uLightColor[i];
+			if (dot(fN, fV) >= 0) {
+				spec += pow(max(0, dot(fN, fH)), getSpecularExponent()) * fSpecularAmount * getSpecularColor() * uLightColor[i];
+			}
 		}
 	}
     

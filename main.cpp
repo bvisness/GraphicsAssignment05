@@ -23,12 +23,9 @@
 //store window width and height
 int ww = 1000, wh = 700;
 
-//our modelview and perspective matrices
-mat4 mv, p;
-
 Scene* scene;
 
-Sphere* test;
+Sphere* earth;
 
 Camera* mainCam;
 
@@ -52,7 +49,6 @@ void display(void)
 }
 
 void keyboard(unsigned char key, int x, int y) {
-	/*exit when the escape key is pressed*/
     if (key == 27) {
 		exit(0);
     }
@@ -76,19 +72,23 @@ void createObjects() {
 	Image* earthDiffuseImage = new Image("images/earth.png");
 	Texture2D* earthDiffuseTex = new Texture2D(earthDiffuseImage->getInfo());
 
-	test = new Sphere(2, 32, Vector4(1, 1, 1, 1));
-	test->material.diffuseTexture = earthDiffuseTex;
-	scene->addGameObject(test);
+	Image* earthSpecImage = new Image("images/EarthSpec.png");
+	Texture2D* earthSpecTex = new Texture2D(earthSpecImage->getInfo());
+
+	earth = new Sphere(2, 64, Vector4(1, 1, 1, 1));
+	earth->material.diffuseTexture = earthDiffuseTex;
+	earth->material.specTexture = earthSpecTex;
+	scene->addGameObject(earth);
 
 	mainCam = new Camera();
-	mainCam->position.z = 10;
-	mainCam->setFOV(30);
-	mainCam->setTarget(test);
+	mainCam->position.z = 30;
+	mainCam->setFOV(10);
+	mainCam->setTarget(earth);
 	scene->addGameObject(mainCam);
 
 	Light* light = new Light();
-	light->type = LIGHT_POINT;
-	light->position = Vector3(2, 2, 5);
+	light->type = LIGHT_DIRECTIONAL;
+	light->rotation = Vector3(0, 120, 0);
 	light->color = Vector4(1, 1, 1, 1);
 	scene->addLight(light);
 	scene->addGameObject(light);
@@ -97,31 +97,25 @@ void createObjects() {
 }
 
 void init() {
-    /*select clearing (background) color*/
     glClearColor(0.0, 0.0, 0.0, 0.0);
     
     createObjects();
 	scene->init();
     
-    //Only draw the things in the front layer
 	glEnable(GL_DEPTH_TEST);
 }
 
-//reshape will be called at least once when the window is created,
-//so we can handle projection matrix work here
 void reshape(int width, int height){
 	ww= width;
 	wh = height;
-	//field of view angle, aspect ratio, closest distance from camera to object, largest distance from camera to object
     
-    //send over projection matrix to vertex shader
     scene->setAspectRatio((float)width, (float)height);
 	
 	glViewport(0, 0, width, height);
 }
 
 void timer(GLint v) {
-	test->rotation.y += 1;
+	earth->rotation.y += 0.3;
 
     glutPostRedisplay();
 	glutTimerFunc(1000 / v, timer, v);
@@ -129,7 +123,6 @@ void timer(GLint v) {
 
 int main(int argc, char **argv)
 {
-    /*set up window for display*/
     glutInit(&argc, argv);
     glutInitWindowPosition(0, 0); 
     glutInitWindowSize(ww, wh);
