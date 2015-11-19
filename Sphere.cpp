@@ -30,7 +30,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 
 		sphereVerts[k] = vec4(0, radius, 0, 1.0);
 		sphereNormals[k] = vec3(0, 1, 0);
-		sphereUVs[k] = vec2((float)(i + 0.5) / longitudeSteps, 1);
+		sphereUVs[k] = vec2((float)(i + 0.5) / longitudeSteps, 0);
 		k++;
 
 		sphereVerts[k] = vec4(
@@ -44,7 +44,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 			sin((M_PI / 2) - latitudeStep),
 			cos(longitude) * cos((M_PI / 2) - latitudeStep)
 		);
-		sphereUVs[k] = vec2((float)i / longitudeSteps, (float)(latitudeSteps - 1) / latitudeSteps);
+		sphereUVs[k] = vec2((float)i / longitudeSteps, 1 - (float)(latitudeSteps - 1) / latitudeSteps);
 		k++;
 
 		sphereVerts[k] = vec4(
@@ -58,7 +58,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 			sin((M_PI / 2) - latitudeStep),
 			cos(longitude + longitudeStep) * cos((M_PI / 2) - latitudeStep)
 		);
-		sphereUVs[k] = vec2((float)(i + 1) / longitudeSteps, (float)(latitudeSteps - 1) / latitudeSteps);
+		sphereUVs[k] = vec2((float)(i + 1) / longitudeSteps, 1 - (float)(latitudeSteps - 1) / latitudeSteps);
 		k++;
 	}
 
@@ -81,7 +81,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 				sin(latitude),
 				cos(longitude) * cos(latitude)
 			);
-			sphereUVs[k] = vec2((float)j / longitudeSteps, (float)i / latitudeSteps);
+			sphereUVs[k] = vec2((float)j / longitudeSteps, 1 - (float)i / latitudeSteps);
             k++;
             
             sphereVerts[k] = vec4(
@@ -95,7 +95,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 				sin(latitude + latitudeStep),
 				cos(longitude) * cos(latitude + latitudeStep)
 			);
-			sphereUVs[k] = vec2((float)j / longitudeSteps, (float)(i + 1) / latitudeSteps);
+			sphereUVs[k] = vec2((float)j / longitudeSteps, 1 - (float)(i + 1) / latitudeSteps);
             k++;
             
             sphereVerts[k] = vec4(
@@ -109,7 +109,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 				sin(latitude + latitudeStep),
 				cos(longitude + longitudeStep) * cos(latitude + latitudeStep)
 			);
-			sphereUVs[k] = vec2((float)(j + 1) / longitudeSteps, (float)(i + 1) / latitudeSteps);
+			sphereUVs[k] = vec2((float)(j + 1) / longitudeSteps, 1 - (float)(i + 1) / latitudeSteps);
             k++;
             
 			//triangle 2
@@ -124,7 +124,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 				sin(latitude),
 				cos(longitude) * cos(latitude)
 			);
-			sphereUVs[k] = vec2((float)j / longitudeSteps, (float)i / latitudeSteps);
+			sphereUVs[k] = vec2((float)j / longitudeSteps, 1 - (float)i / latitudeSteps);
 			k++;
 
 			sphereVerts[k] = vec4(
@@ -138,7 +138,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 				sin(latitude + latitudeStep),
 				cos(longitude + longitudeStep) * cos(latitude + latitudeStep)
 			);
-			sphereUVs[k] = vec2((float)(j + 1) / longitudeSteps, (float)(i + 1) / latitudeSteps);
+			sphereUVs[k] = vec2((float)(j + 1) / longitudeSteps, 1 - (float)(i + 1) / latitudeSteps);
 			k++;
 
 			sphereVerts[k] = vec4(
@@ -152,7 +152,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 				sin(latitude),
 				cos(longitude + longitudeStep) * cos(latitude)
 			);
-			sphereUVs[k] = vec2((float)(j + 1) / longitudeSteps, (float)i / latitudeSteps);
+			sphereUVs[k] = vec2((float)(j + 1) / longitudeSteps, 1 - (float)i / latitudeSteps);
 			k++;
         }
     }
@@ -163,7 +163,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 
 		sphereVerts[k] = vec4(0, -radius, 0, 1.0);
 		sphereNormals[k] = vec3(0, -1, 0);
-		sphereUVs[k] = vec2((float)(i + 0.5) / longitudeSteps, 0);
+		sphereUVs[k] = vec2((float)(i + 0.5) / longitudeSteps, 1);
 		k++;
 
 		sphereVerts[k] = vec4(
@@ -177,7 +177,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 			sin((-M_PI / 2) + latitudeStep),
 			cos(longitude) * cos(-M_PI / 2 + latitudeStep)
 		);
-		sphereUVs[k] = vec2((float)i / longitudeSteps, 1.0 / latitudeSteps);
+		sphereUVs[k] = vec2((float)i / longitudeSteps, 1 - 1.0 / latitudeSteps);
 		k++;
 
 		sphereVerts[k] = vec4(
@@ -191,7 +191,7 @@ void Sphere::initSphere(float radius, int subdiv) {
 			sin((-M_PI / 2) + latitudeStep),
 			cos(longitude + longitudeStep) * cos((-M_PI / 2) + latitudeStep)
 		);
-		sphereUVs[k] = vec2((float)(i + 1) / longitudeSteps, 1.0 / latitudeSteps);
+		sphereUVs[k] = vec2((float)(i + 1) / longitudeSteps, 1 - 1.0 / latitudeSteps);
 		k++;
 	}
     

@@ -82,6 +82,7 @@ void createObjects() {
 
 	mainCam = new Camera();
 	mainCam->position.z = 10;
+	mainCam->setFOV(30);
 	mainCam->setTarget(test);
 	scene->addGameObject(mainCam);
 
@@ -120,7 +121,7 @@ void reshape(int width, int height){
 }
 
 void timer(GLint v) {
-	test->rotation.x += 1;
+	test->rotation.y += 1;
 
     glutPostRedisplay();
 	glutTimerFunc(1000 / v, timer, v);
