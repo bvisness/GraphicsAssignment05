@@ -75,9 +75,14 @@ void createObjects() {
 	Image* earthSpecImage = new Image("images/EarthSpec.png");
 	Texture2D* earthSpecTex = new Texture2D(earthSpecImage->getInfo());
 
+	Image* earthNormImage = new Image("images/EarthNormal.png");
+	Texture2D* earthNormalMap = new Texture2D(earthNormImage->getInfo());
+
 	earth = new Sphere(2, 64, Vector4(1, 1, 1, 1));
 	earth->material.diffuseTexture = earthDiffuseTex;
 	earth->material.specTexture = earthSpecTex;
+	earth->material.normalMap = earthNormalMap;
+	earth->material.specularExponent = 500;
 	scene->addGameObject(earth);
 
 	mainCam = new Camera();

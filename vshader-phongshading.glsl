@@ -3,6 +3,8 @@
 in vec4 vPosition;
 in vec4 vAmbientDiffuseColor;
 in vec3 vNormal;
+in vec3 vTangent;
+in float vBitangentSign;
 in vec2 vTexCoord;
 in float vDiffuseAmount;
 in float vSpecularAmount;
@@ -12,6 +14,8 @@ vec4 vSpecularColor = vec4(1, 1, 1, 1);
 
 out vec4 fPosEye;
 out vec3 fNormal;
+out vec3 fTangent;
+flat out float fBitangentSign;
 out vec2 fTexCoord;
 out vec4 fAmbientDiffuseColor;
 out vec4 fSpecularColor;
@@ -26,6 +30,8 @@ void main()
 {
 	fPosEye = uModelView * vPosition;
 	fNormal = (uModelView * vec4(vNormal, 0)).xyz;
+	fTangent = (uModelView * vec4(vTangent, 0)).xyz;
+	fBitangentSign = vBitangentSign;
 	fTexCoord = vTexCoord;
 	fAmbientDiffuseColor = vAmbientDiffuseColor;
 	fSpecularColor = vSpecularColor;

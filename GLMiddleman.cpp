@@ -67,6 +67,14 @@ void GLMiddleman::bufferObject(ObjectInfo object) {
 			warnWithMessage("In GLMiddleman::bufferObject(): numberOfVertices was nonzero and vertexNormals was not set, object not buffered.");
 			return;
 		}
+		if (object.vertexTangents == nullptr) {
+			warnWithMessage("In GLMiddleman::bufferObject(): numberOfVertices was nonzero and vertexTangents was not set, object not buffered.");
+			return;
+		}
+		if (object.vertexBitangentSigns == nullptr) {
+			warnWithMessage("In GLMiddleman::bufferObject(): numberOfVertices was nonzero and vertexBitangentSigns was not set, object not buffered.");
+			return;
+		}
 	}
 
 	glBindVertexArray(object.vao);
@@ -92,6 +100,28 @@ void GLMiddleman::bufferObject(ObjectInfo object) {
 		vNormal = glGetAttribLocation(program, "vNormal");
 		glEnableVertexAttribArray(vNormal);
 		glVertexAttribPointer(vNormal, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	k++;
+
+	{
+		// Vertex tangent vectors
+		int dataCount = 3;
+		glBindBuffer(GL_ARRAY_BUFFER, object.vbo[k]);
+		glBufferData(GL_ARRAY_BUFFER, object.numberOfVertices * (sizeof(GLfloat)* dataCount), object.vertexTangents, GL_STATIC_DRAW);
+		vTangent = glGetAttribLocation(program, "vTangent");
+		glEnableVertexAttribArray(vTangent);
+		glVertexAttribPointer(vTangent, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	k++;
+
+	{
+		// Vertex bitangent signs
+		int dataCount = 1;
+		glBindBuffer(GL_ARRAY_BUFFER, object.vbo[k]);
+		glBufferData(GL_ARRAY_BUFFER, object.numberOfVertices * (sizeof(GLfloat)* dataCount), object.vertexBitangentSigns, GL_STATIC_DRAW);
+		vBitangentSign = glGetAttribLocation(program, "vBitangentSign");
+		glEnableVertexAttribArray(vBitangentSign);
+		glVertexAttribPointer(vBitangentSign, dataCount, GL_FLOAT, GL_FALSE, 0, 0);
 	}
 	k++;
 

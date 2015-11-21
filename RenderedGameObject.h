@@ -17,7 +17,7 @@
 #include "GameObject.h"
 
 #ifndef VBO_COUNT
-#define VBO_COUNT 7 // position, normal vector, uv, ambient and diffuse colors, diffuse amount, specular amount, specular exponent
+#define VBO_COUNT 9 // position, normal vector, tangents, bitangent signs, uv, ambient and diffuse colors, diffuse amount, specular amount, specular exponent
 #endif
 
 class RenderedGameObject : public GameObject {

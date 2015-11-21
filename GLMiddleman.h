@@ -34,6 +34,8 @@ public:
     GLuint projection;
     GLuint vPosition;
     GLuint vNormal;
+	GLuint vTangent;
+	GLuint vBitangentSign;
 	GLuint vTexCoord;
     GLuint vAmbientDiffuseColor;
     GLfloat vDiffuseAmount;
@@ -64,12 +66,20 @@ public:
     void updateProjectionMatrix(mat4 newMatrix);
     void updateModelViewMatrix(mat4 newMatrix);
 
+	// If you modify this, make sure to update the following:
+	// - VBO_COUNT in RenderedGameObject
+	// - RenderedGameObject::customInitGameObject()
+	// - Getter methods in RenderedGameObject.h
+	// - Attribute ids in GLMiddleman.h (all the GLuints)
+	// - Buffering methods in GLMiddleman.cpp
 	struct ObjectInfo {
 		GLuint vao = UINT_MAX;
 		GLuint* vbo = nullptr;
 		int unsigned numberOfVertices = 0;
 		Vector4* vertices = nullptr;
 		Vector3* vertexNormals = nullptr;
+		Vector3* vertexTangents = nullptr;
+		GLfloat* vertexBitangentSigns = nullptr;
 		Vector2* vertexUVs = nullptr;
 		Vector4* vertexColors = nullptr;
 		Material material = Material();

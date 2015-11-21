@@ -57,6 +57,8 @@ void RenderedGameObject::customInitGameObject() {
 	object.numberOfVertices = getNumberOfVertices();
 	object.vertices = getVertices();
 	object.vertexNormals = getVertexNormals();
+	object.vertexTangents = getVertexTangents();
+	object.vertexBitangentSigns = getVertexBitangentSigns();
 	object.vertexUVs = getVertexUVs();
 	object.vertexColors = getVertexColors();
 	object.material = material;
