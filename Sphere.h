@@ -19,14 +19,19 @@ private:
     int numVertsSphere;
     Vector4* sphereVerts = nullptr;
     Vector3* sphereNormals = nullptr;
+	Vector3* sphereTangents = nullptr;
+	GLfloat* sphereBitangentSigns = nullptr;
 	Vector2* sphereUVs = nullptr;
     Vector4* sphereColors = nullptr;
 protected:
     int getNumberOfVertices();
     Vector4* getVertices();
     Vector3* getVertexNormals();
+	Vector3* getVertexTangents();
+	GLfloat* getVertexBitangentSigns();
 	Vector2* getVertexUVs();
     Vector4* getVertexColors();
+	void setVertexTangent(int vIndex, Vector3 tangent, int fSign);
 public:
 	Sphere(float radius, int subdiv, Vector4 color) : RenderedGameObject() {
         sphereColor = color;

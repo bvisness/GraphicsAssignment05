@@ -81,6 +81,7 @@
     <ClInclude Include="..\Light.h" />
     <ClInclude Include="..\mat.h" />
     <ClInclude Include="..\Material.h" />
+    <ClInclude Include="..\mikktspace.h" />
     <ClInclude Include="..\PLYGameObject.h" />
     <ClInclude Include="..\RenderedGameObject.h" />
     <ClInclude Include="..\Scene.h" />
@@ -100,6 +101,7 @@
     <ClCompile Include="..\InitShader.cpp" />
     <ClCompile Include="..\Light.cpp" />
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\mikktspace.c" />
     <ClCompile Include="..\PLYGameObject.cpp" />
     <ClCompile Include="..\RenderedGameObject.cpp" />
     <ClCompile Include="..\Scene.cpp" />

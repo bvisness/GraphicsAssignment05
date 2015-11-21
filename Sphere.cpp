@@ -16,6 +16,8 @@ void Sphere::initSphere(float radius, int subdiv) {
     
     sphereVerts = new Vector4[numVertsSphere];
     sphereNormals = new Vector3[numVertsSphere];
+	sphereTangents = new Vector3[numVertsSphere];
+	sphereBitangentSigns = new GLfloat[numVertsSphere];
 	sphereUVs = new Vector2[numVertsSphere];
     sphereColors = new Vector4[numVertsSphere];
 
@@ -212,10 +214,23 @@ Vector3* Sphere::getVertexNormals() {
     return sphereNormals;
 }
 
+Vector3* Sphere::getVertexTangents() {
+	return sphereTangents;
+}
+
+GLfloat* Sphere::getVertexBitangentSigns() {
+	return sphereBitangentSigns;
+}
+
 Vector2* Sphere::getVertexUVs() {
 	return sphereUVs;
 }
 
 Vector4* Sphere::getVertexColors() {
     return sphereColors;
+}
+
+void Sphere::setVertexTangent(int vIndex, Vector3 tangent, int fSign) {
+	sphereTangents[vIndex] = tangent;
+	sphereBitangentSigns[vIndex] = fSign;
 }

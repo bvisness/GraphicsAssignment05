@@ -9,6 +9,8 @@
 #ifndef __Assignment04__RenderedGameObject__
 #define __Assignment04__RenderedGameObject__
 
+#include "mikktspace.h"
+
 #include "VisnessUtil.h"
 #include "VisnessGL.h"
 #include "Material.h"
@@ -19,21 +21,28 @@
 #endif
 
 class RenderedGameObject : public GameObject {
+private:
+	SMikkTSpaceContext mikkTContext;
+	SMikkTSpaceInterface mikkTInterface;
 protected:
 	GLuint vao;
 	GLuint vbo[VBO_COUNT];
 
 	void drawGameObject();
 	void customInitGameObject();
+public:
+	GLuint getVAO();
+	Material material;
 
 	virtual int getNumberOfVertices() = 0;
 	virtual Vector4* getVertices() = 0;
 	virtual Vector3* getVertexNormals() = 0;
+	virtual Vector3* getVertexTangents() = 0;
+	virtual GLfloat* getVertexBitangentSigns() = 0;
 	virtual Vector2* getVertexUVs() = 0;
 	virtual Vector4* getVertexColors() = 0;
-public:
-	GLuint getVAO();
-	Material material;
+
+	virtual void setVertexTangent(int vIndex, Vector3 tangent, int fSign) = 0;
 };
 
 #endif
