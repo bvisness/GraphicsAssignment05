@@ -89,7 +89,7 @@ void createObjects() {
 	earth->material.specularExponent = 500;
 	scene->addGameObject(earth);
 
-	clouds = new Sphere(2.01, 64, Vector4(1, 1, 1, 0.5));
+	clouds = new Sphere(2.01, 64, Vector4(1, 1, 1, 1));
 	clouds->material.diffuseTexture = earthCloudsTex;
 	scene->addGameObject(clouds);
 
@@ -121,6 +121,9 @@ void init() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_MULTISAMPLE);
+
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
 }
 
 void reshape(int width, int height){
