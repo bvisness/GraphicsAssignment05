@@ -26,6 +26,7 @@ int ww = 1000, wh = 700;
 Scene* scene;
 
 Sphere* earth;
+Sphere* clouds;
 
 Camera* mainCam;
 
@@ -78,12 +79,19 @@ void createObjects() {
 	Image* earthNormImage = new Image("images/EarthNormal.png");
 	Texture2D* earthNormalMap = new Texture2D(earthNormImage->getInfo());
 
+	Image* earthCloudsImage = new Image("images/earthcloudmap.png");
+	Texture2D* earthCloudsTex = new Texture2D(earthCloudsImage->getInfo());
+
 	earth = new Sphere(2, 64, Vector4(1, 1, 1, 1));
 	earth->material.diffuseTexture = earthDiffuseTex;
 	earth->material.specTexture = earthSpecTex;
 	earth->material.normalMap = earthNormalMap;
 	earth->material.specularExponent = 500;
 	scene->addGameObject(earth);
+
+	clouds = new Sphere(2.01, 64, Vector4(1, 1, 1, 0.5));
+	clouds->material.diffuseTexture = earthCloudsTex;
+	scene->addGameObject(clouds);
 
 	mainCam = new Camera();
 	mainCam->position.z = 30;
@@ -108,6 +116,9 @@ void init() {
 	scene->init();
     
 	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void reshape(int width, int height){
@@ -120,7 +131,8 @@ void reshape(int width, int height){
 }
 
 void timer(GLint v) {
-	earth->rotation.y += 0.3;
+	earth->rotation.y += 0.2;
+	clouds->rotation.y += 0.18;
 
     glutPostRedisplay();
 	glutTimerFunc(1000 / v, timer, v);

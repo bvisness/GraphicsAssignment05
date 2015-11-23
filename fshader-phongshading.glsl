@@ -50,19 +50,21 @@ bool hasNormalMap() {
 }
 
 vec4 getAmbientDiffuseColor() {
+	vec4 result = fAmbientDiffuseColor;
 	if (hasDiffuseTexture()) {
-		return texture2D(uDiffuseTexture, fTexCoord);
-	} else {
-		return fAmbientDiffuseColor;
+		result *= texture2D(uDiffuseTexture, fTexCoord);
 	}
+	return result;
 }
 
 vec4 getSpecularColor() {
+	vec4 result;
 	if (hasSpecularTexture()) {
-		return vec4(texture2D(uSpecularTexture, fTexCoord).rgb, 1);
+		result = vec4(texture2D(uSpecularTexture, fTexCoord).rgb, 1);
 	} else {
-		return fSpecularColor;
+		result = fSpecularColor;
 	}
+	return result * getAmbientDiffuseColor().a;
 }
 
 float getSpecularExponent() {
