@@ -33,6 +33,7 @@ protected:
 public:
 	GLuint getVAO();
 	Material material;
+	bool visible = true;
 
 	virtual int getNumberOfVertices() = 0;
 	virtual Vector4* getVertices() = 0;

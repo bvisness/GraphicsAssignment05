@@ -82,6 +82,10 @@ GLuint RenderedGameObject::getVAO() {
 }
 
 void RenderedGameObject::drawGameObject() {
+	if (!visible) {
+		return;
+	}
+
 	mat4 mv = getModelViewMatrix();
 
 	scene->middleman->updateModelViewMatrix(mv);

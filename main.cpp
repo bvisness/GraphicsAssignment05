@@ -28,6 +28,11 @@ Scene* scene;
 Sphere* earth;
 Sphere* clouds;
 
+Texture2D* earthDiffuseTex;
+Texture2D* earthSpecTex;
+Texture2D* earthNormalMap;
+Texture2D* earthCloudsTex;
+
 Camera* mainCam;
 
 void display(void)
@@ -53,6 +58,31 @@ void keyboard(unsigned char key, int x, int y) {
     if (key == 27) {
 		exit(0);
     }
+
+	if (key == 'd') {
+		if (earth->material.diffuseTexture == nullptr) {
+			earth->material.diffuseTexture = earthDiffuseTex;
+		} else {
+			earth->material.diffuseTexture = nullptr;
+		}
+	}
+	if (key == 's') {
+		if (earth->material.specTexture == nullptr) {
+			earth->material.specTexture = earthSpecTex;
+		} else {
+			earth->material.specTexture = nullptr;
+		}
+	}
+	if (key == 'n') {
+		if (earth->material.normalMap == nullptr) {
+			earth->material.normalMap = earthNormalMap;
+		} else {
+			earth->material.normalMap = nullptr;
+		}
+	}
+	if (key == 'c') {
+		clouds->visible = !clouds->visible;
+	}
 }
 
 void keyboardUp(unsigned char key, int x, int y) {
@@ -71,16 +101,16 @@ void createObjects() {
     scene = new Scene();
 
 	Image* earthDiffuseImage = new Image("images/earth.png");
-	Texture2D* earthDiffuseTex = new Texture2D(earthDiffuseImage->getInfo());
+	earthDiffuseTex = new Texture2D(earthDiffuseImage->getInfo());
 
 	Image* earthSpecImage = new Image("images/EarthSpec.png");
-	Texture2D* earthSpecTex = new Texture2D(earthSpecImage->getInfo());
+	earthSpecTex = new Texture2D(earthSpecImage->getInfo());
 
 	Image* earthNormImage = new Image("images/EarthNormal.png");
-	Texture2D* earthNormalMap = new Texture2D(earthNormImage->getInfo());
+	earthNormalMap = new Texture2D(earthNormImage->getInfo());
 
 	Image* earthCloudsImage = new Image("images/earthcloudmap.png");
-	Texture2D* earthCloudsTex = new Texture2D(earthCloudsImage->getInfo());
+	earthCloudsTex = new Texture2D(earthCloudsImage->getInfo());
 
 	earth = new Sphere(2, 64, Vector4(1, 1, 1, 1));
 	earth->material.diffuseTexture = earthDiffuseTex;

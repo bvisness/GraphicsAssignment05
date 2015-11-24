@@ -137,6 +137,7 @@ void main()
     //fColor = spec;
 	//fColor = texture2D(uTexture, fTexCoord);
     //fColor = vec4(fN, 1);
+	//fColor = vec4(normalize(fTangent), 1);
     //fColor = vec4(diffuseAmount, diffuseAmount, diffuseAmount, 1);
     //fColor = vec4(specularAmount, specularAmount, specularAmount, 1);
 	//fColor = getSpecularColor();
