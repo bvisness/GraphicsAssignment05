@@ -23,6 +23,13 @@
 //store window width and height
 int ww = 1000, wh = 700;
 
+int mouseX = 0;
+int mouseY = 0;
+int mouseXDelta = 0;
+int mouseYDelta = 0;
+bool mouseLeftPressed = false;
+bool mouseRightPressed = false;
+
 Scene* scene;
 
 Sphere* earth;
@@ -33,7 +40,11 @@ Texture2D* earthSpecTex;
 Texture2D* earthNormalMap;
 Texture2D* earthCloudsTex;
 
+GameObject* cameraAnchor;
 Camera* mainCam;
+
+float cameraAnchorRotVelocity = 0;
+float cameraAnchorRotFriction = 0.01;
 
 void display(void)
 {
@@ -52,6 +63,28 @@ void display(void)
     scene->draw();
 
     glutSwapBuffers();
+}
+
+void mouseClick(int button, int state, int x, int y) {
+	if (button == GLUT_LEFT_BUTTON) {
+		mouseLeftPressed = (state == GLUT_DOWN);
+	}
+	if (button == GLUT_RIGHT_BUTTON) {
+		mouseRightPressed = (state == GLUT_DOWN);
+	}
+}
+
+void mouseMove(int x, int y) {
+	y = -y;
+	mouseXDelta = x - mouseX;
+	mouseYDelta = y - mouseY;
+	mouseX = x;
+	mouseY = y;
+
+	if (mouseLeftPressed) {
+		cameraAnchorRotVelocity = -mouseXDelta * 0.25;
+		cameraAnchor->rotation.y += cameraAnchorRotVelocity;
+	}
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -129,13 +162,17 @@ void createObjects() {
 	mainCam->setTarget(earth);
 	scene->addGameObject(mainCam);
 
+	cameraAnchor = new GameObject();
+	cameraAnchor->addChild(mainCam);
+
 	Light* light = new Light();
 	light->type = LIGHT_DIRECTIONAL;
 	light->rotation = Vector3(0, 120, 0);
-	light->color = Vector4(1, 1, 1, 1);
+	light->color = Vector4(1, 1, 0.9, 1);
 	scene->addLight(light);
 	scene->addGameObject(light);
     
+	scene->ambientLightColor = Vector4(0.05, 0.05, 0.05, 1);
     scene->setActiveCamera(mainCam);
 }
 
@@ -169,6 +206,11 @@ void timer(GLint v) {
 	earth->rotation.y += 0.2;
 	clouds->rotation.y += 0.18;
 
+	if (!mouseLeftPressed) {
+		cameraAnchor->rotation.y += cameraAnchorRotVelocity;
+		cameraAnchorRotVelocity *= 0.95;
+	}
+
     glutPostRedisplay();
 	glutTimerFunc(1000 / v, timer, v);
 }
@@ -193,6 +235,9 @@ int main(int argc, char **argv)
     init();
 
     glutDisplayFunc(display);
+	glutMouseFunc(mouseClick);
+	glutMotionFunc(mouseMove);
+	glutPassiveMotionFunc(mouseMove);
     glutKeyboardFunc(keyboard);
     glutKeyboardUpFunc(keyboardUp);
     glutSpecialFunc(special);
